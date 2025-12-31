@@ -80,14 +80,21 @@ let numerosSorteados = []; // Será carregado da API
 let apostas = []; // Será carregado da API
 let concurso = "";
 let dataSorteio = "";
+let temDadosNaoSalvos = false; // Controle de alterações
+
+function marcarNaoSalvo() {
+  temDadosNaoSalvos = true;
+}
 
 // Inputs de Concurso e Data
 const concursoInput = $("concursoInput");
 const dataSorteioInput = $("dataSorteioInput");
+const btnSalvarInfo = $("btnSalvarInfo");
 
-// Listeners para salvar automaticamente ao mudar concurso/data
-if(concursoInput) concursoInput.addEventListener("input", (e) => { concurso = e.target.value; salvarApostas(); });
-if(dataSorteioInput) dataSorteioInput.addEventListener("input", (e) => { dataSorteio = e.target.value; salvarApostas(); });
+// Listeners: Agora apenas marcam como não salvo, não salvam automático
+if(concursoInput) concursoInput.addEventListener("input", (e) => { concurso = e.target.value; marcarNaoSalvo(); });
+if(dataSorteioInput) dataSorteioInput.addEventListener("input", (e) => { dataSorteio = e.target.value; marcarNaoSalvo(); });
+if(btnSalvarInfo) btnSalvarInfo.addEventListener("click", () => { salvarApostas(); });
 
 // elementos
 const sorteioGrid = $("sorteioGrid");
@@ -211,6 +218,8 @@ async function salvarApostas() {
       },
       body: JSON.stringify({ apostas, concurso, data: dataSorteio })
     });
+    temDadosNaoSalvos = false; // Resetar flag após salvar com sucesso
+    alert("✅ Dados salvos com sucesso!");
   } catch (err) {
     console.error("Erro ao salvar no servidor", err);
     alert("⚠️ Erro ao salvar aposta no servidor! Verifique sua conexão.");
@@ -286,6 +295,7 @@ function atualizarApostas() {
     del.addEventListener("click", () => {
       if (!confirm("Remover esse jogo?")) return;
       apostas.splice(idx, 1);
+      marcarNaoSalvo(); // Marcar alteração
       salvarApostas();
       atualizarApostas();
     });
@@ -416,6 +426,7 @@ criarApostaManualBtn.addEventListener("click", () => {
   const uniq = [...new Set(vals)];
   if (uniq.length !== vals.length) return manualErro.innerText = "Não repita dezenas no mesmo jogo.";
   apostas.push(uniq);
+  marcarNaoSalvo(); // Marcar alteração
   salvarApostas();
   atualizarApostas();
   manualErro.innerText = "Aposta adicionada!";
@@ -496,6 +507,7 @@ pdfInput.addEventListener("change", async (ev) => {
           const existe = apostas.some(a => JSON.stringify(a) === JSON.stringify(arr));
           if (!existe) {
             apostas.push(arr);
+            marcarNaoSalvo();
             foundThisFile++;
           }
         }
@@ -537,6 +549,7 @@ importJsonInput.addEventListener("change", () => {
           apostas.push(n);
         }
       });
+      marcarNaoSalvo();
       salvarApostas();
       atualizarApostas();
       alert(`${apostas.length - antes} apostas anexadas com sucesso.`);
@@ -587,3 +600,11 @@ function logout() {
   localStorage.removeItem("token");
   window.location.href = "index.html";
 }
+
+// Alerta ao tentar sair da página com dados não salvos
+window.addEventListener("beforeunload", (e) => {
+  if (temDadosNaoSalvos) {
+    e.preventDefault();
+    e.returnValue = "Você tem alterações não salvas. Deseja realmente sair?";
+  }
+});

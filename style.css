@@ -428,6 +428,8 @@ table.admin-table th { background: #444; }
     border-bottom: 1px solid #555;
     display: flex;
     flex-direction: column;
+    word-break: break-word; /* Quebra palavras longas (emails/jogos) */
+    overflow-wrap: anywhere; /* Garante que não vaze da tela */
   }
   table.admin-table td:last-child { border-bottom: none; }
 
