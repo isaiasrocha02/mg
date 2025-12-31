@@ -38,6 +38,10 @@
 <script>
   const API_URL = "http://localhost:3000"; // ⚠️ ALTERE AQUI TAMBÉM QUANDO HOSPEDAR
 
+  if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1" && API_URL.includes("localhost")) {
+    alert("⚠️ ERRO: O site está no GitHub Pages, mas configurado para 'localhost'.\n\nVocê precisa hospedar o backend (no Render) e atualizar a API_URL neste arquivo.");
+  }
+
   // Verifica se é admin
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (!currentUser || !currentUser.is_admin) {
