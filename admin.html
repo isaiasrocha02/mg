@@ -11,7 +11,7 @@
   <header class="segundo">Painel do Administrador 👮‍♂️</header>
   
   <nav>
-    <button onclick="window.location.href='index.html'">Ir para Sorteio / Jogos</button>
+    <button onclick="window.location.href='app.html'">Ir para Sorteio / Jogos</button>
     <button onclick="logout()">Sair</button>
   </nav>
 
@@ -40,15 +40,15 @@
 
   // Verifica se é admin
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser || !currentUser.isAdmin) {
+  if (!currentUser || !currentUser.is_admin) {
     alert("Acesso negado.");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   }
 
   function logout() {
     localStorage.removeItem("currentUser");
     localStorage.removeItem("token");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   }
 
   async function carregarDados() {

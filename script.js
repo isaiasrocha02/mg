@@ -7,7 +7,7 @@ const token = localStorage.getItem("token");
 
 // Se não estiver logado, manda para o login
 if (!currentUser) {
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 } else {
   // Exibe nome do usuário
   const greeting = document.getElementById("userGreeting");
@@ -317,14 +317,14 @@ async function init() {
     });
     if (res.ok) {
       apostas = await res.json();
-      atualizarApostas();
     } else if (res.status === 401) {
       logout();
+      return;
     }
   } catch (err) {
     console.error("Erro ao carregar apostas do servidor", err);
-    alert("Não foi possível conectar ao servidor. Verifique se ele está rodando.");
   }
+  atualizarApostas();
 }
 init();
 
@@ -513,7 +513,7 @@ function abrirModalSenha() {
   document.getElementById("novaSenha").value = "";
 }
 
-function salvarNovaSenha() {
+async function salvarNovaSenha() {
   const currentPassword = document.getElementById("senhaAtual").value;
   const newPassword = document.getElementById("novaSenha").value;
   
@@ -544,5 +544,5 @@ function salvarNovaSenha() {
 function logout() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("token");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
