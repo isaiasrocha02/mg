@@ -17,15 +17,10 @@
   </nav>
 
   <section class="painel">
-    <h2>Conferência Manual (Gabarito)</h2>
-    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:10px;">
-      <input type="number" id="n1" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
-      <input type="number" id="n2" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
-      <input type="number" id="n3" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
-      <input type="number" id="n4" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
-      <input type="number" id="n5" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
-      <input type="number" id="n6" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
-      <button onclick="carregarDados()" style="background:#e67e22;">Conferir</button>
+    <h2>Números Sorteados (clique para selecionar)</h2>
+    <div id="sorteioGrid" class="numeros"></div>
+    <div style="text-align:center; margin-top:10px;">
+      <button onclick="carregarDados()" style="background:#e67e22; padding:10px 20px;">Conferir</button>
     </div>
   </section>
 
@@ -90,15 +85,9 @@
     const tbody = document.getElementById("usersTable");
     const mostrarGanhadores = document.getElementById("chkGanhadores").checked;
     const token = localStorage.getItem("token");
-    let numerosSorteados = [];
+    // numerosSorteados agora é global e controlado pelo grid
 
     try {
-      // Lê os números dos inputs manuais
-      for (let i = 1; i <= 6; i++) {
-        const val = document.getElementById(`n${i}`).value;
-        if (val) numerosSorteados.push(parseInt(val));
-      }
-
       const res = await fetch(`${API_URL}/api/admin/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -181,6 +170,29 @@
     }
   }
 
+  // Lógica do Grid de Sorteio (Admin)
+  let numerosSorteados = [];
+  const pad = n => String(n).padStart(2, "0");
+
+  function montarGrid() {
+    const grid = document.getElementById("sorteioGrid");
+    grid.innerHTML = "";
+    for (let i = 1; i <= 60; i++) {
+      const div = document.createElement("div");
+      div.className = "numero";
+      div.innerText = pad(i);
+      if (numerosSorteados.includes(i)) div.classList.add("selecionado");
+      div.onclick = () => {
+        if (numerosSorteados.includes(i)) numerosSorteados = numerosSorteados.filter(n => n !== i);
+        else if (numerosSorteados.length < 6) numerosSorteados.push(i);
+        else alert("Máximo 6 números.");
+        montarGrid();
+      };
+      grid.appendChild(div);
+    }
+  }
+
+  montarGrid();
   carregarDados();
 </script>
 </body>
