@@ -16,6 +16,12 @@ if (!currentUser) {
   // Exibe nome do usuário
   const greeting = document.getElementById("userGreeting");
   if(greeting) greeting.innerText = `Olá, ${currentUser.nome}`;
+
+  // Se for admin, mostra botão de voltar ao painel
+  if (currentUser.is_admin) {
+    const btnAdmin = document.getElementById("btnVoltarAdmin");
+    if (btnAdmin) btnAdmin.style.display = "inline-block";
+  }
 }
 
 // ---------------------- TEMA CLARO/ESCURO ----------------------
@@ -193,29 +199,8 @@ salvarSorteioManualBtn.addEventListener("click", () => {
 });
 
 // salvar sorteio
-async function salvarSorteio() {
-  localStorage.setItem("sorteio", JSON.stringify(numerosSorteados));
-  try {
-    await fetch(`${API_URL}/api/sorteio`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ numeros: numerosSorteados })
-    });
-  } catch (err) { console.error("Erro ao salvar sorteio", err); }
-}
-
-// carregar apostas e exibir
-async function salvarApostas() {
-  try {
-    await fetch(`${API_URL}/api/apostas`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+on salvarSorteio() {
+ts{etent-Type': 'apson',
       body: JSON.stringify({ apostas, concurso, data: dataSorteio })
     });
     temDadosNaoSalvos = false; // Resetar flag após salvar com sucesso
@@ -343,13 +328,7 @@ function atualizarApostas() {
 
 // inicialização
 async function init() {
-  
-  // Carregar Sorteio do Servidor
-  try {
-    const resSorteio = await fetch(`${API_URL}/api/sorteio`);
-    if (resSorteio.ok) numerosSorteados = await resSorteio.json();
-  } catch (e) { console.error("Erro ao carregar sorteio", e); }
-  
+  numerosSorteados = JSON.parse(localStorage.getItem("sorteio")) || [];
   montarGrid(); // Monta o grid já com os números certos
 
   try {
@@ -359,14 +338,7 @@ async function init() {
     if (res.ok) {
       const data = await res.json();
       // Verifica se é o formato antigo (array) ou novo (objeto)
-      if (Array.isArray(data)) {
-        apostas = data;
-      } else {
-        apostas = data.games || [];
-        concurso = data.concurso || "";
-        dataSorteio = data.data || "";
-      }
-      if(concursoInput) concursoInput.value = concurso;
+      if (Arri  a     if(concursoInput) concursoInput.value = concurso;
       if(dataSorteioInput) dataSorteioInput.value = dataSorteio;
     } else if (res.status === 401) {
       logout();

@@ -17,6 +17,19 @@
   </nav>
 
   <section class="painel">
+    <h2>Conferência Manual (Gabarito)</h2>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:10px;">
+      <input type="number" id="n1" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
+      <input type="number" id="n2" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
+      <input type="number" id="n3" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
+      <input type="number" id="n4" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
+      <input type="number" id="n5" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
+      <input type="number" id="n6" class="small-input" placeholder="00" style="width:50px; padding:8px; text-align:center;">
+      <button onclick="carregarDados()" style="background:#e67e22;">Conferir</button>
+    </div>
+  </section>
+
+  <section class="painel">
     <h2>Usuários e Apostas</h2>
     <div style="margin-bottom: 15px;">
       <label><input type="checkbox" id="chkGanhadores" onchange="carregarDados()"> Mostrar apenas ganhadores (Quadra, Quina, Sena)</label>
@@ -80,10 +93,10 @@
     let numerosSorteados = [];
 
     try {
-      // Busca o sorteio atualizado do servidor
-      const resSorteio = await fetch(`${API_URL}/api/sorteio`);
-      if (resSorteio.ok) {
-        numerosSorteados = await resSorteio.json();
+      // Lê os números dos inputs manuais
+      for (let i = 1; i <= 6; i++) {
+        const val = document.getElementById(`n${i}`).value;
+        if (val) numerosSorteados.push(parseInt(val));
       }
 
       const res = await fetch(`${API_URL}/api/admin/users`, {
