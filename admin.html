@@ -118,21 +118,25 @@
           if(rawData.concurso || rawData.data) infoExtra = `Conc: ${rawData.concurso || '?'} <br> Data: ${rawData.data || '?'}`;
         }
         
-        // Se filtro ativo, verifica se tem prêmio (4, 5 ou 6 acertos)
+        // Prepara lista de jogos mantendo o índice original
+        let jogosExibicao = apostasUser.map((jogo, i) => ({ jogo, i }));
+
+        // Se filtro ativo, mantém apenas jogos premiados (4, 5 ou 6 acertos)
         if (mostrarGanhadores) {
-          const temPremio = apostasUser.some(jogo => {
-            const acertos = jogo.filter(n => numerosSorteados.includes(n)).length;
+          jogosExibicao = jogosExibicao.filter(item => {
+            const acertos = item.jogo.filter(n => numerosSorteados.includes(n)).length;
             return acertos >= 4;
           });
-          if (!temPremio) return;
+          // Se o usuário não tiver nenhum jogo premiado, não exibe ele na lista
+          if (jogosExibicao.length === 0) return;
         }
 
         const tr = document.createElement("tr");
         
         // Formata os jogos para exibição
         let jogosStr = "";
-        if (apostasUser.length > 0) {
-          jogosStr = apostasUser.map((jogo, i) => {
+        if (jogosExibicao.length > 0) {
+          jogosStr = jogosExibicao.map(({ jogo, i }) => {
             let acertos = 0;
             const numsHtml = jogo.map(n => {
               const s = String(n).padStart(2, '0');

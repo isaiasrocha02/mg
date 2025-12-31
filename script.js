@@ -199,8 +199,19 @@ salvarSorteioManualBtn.addEventListener("click", () => {
 });
 
 // salvar sorteio
-on salvarSorteio() {
-ts{etent-Type': 'apson',
+function salvarSorteio() {
+  localStorage.setItem("sorteio", JSON.stringify(numerosSorteados));
+}
+
+// carregar apostas e exibir
+async function salvarApostas() {
+  try {
+    await fetch(`${API_URL}/api/apostas`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({ apostas, concurso, data: dataSorteio })
     });
     temDadosNaoSalvos = false; // Resetar flag após salvar com sucesso
@@ -338,7 +349,14 @@ async function init() {
     if (res.ok) {
       const data = await res.json();
       // Verifica se é o formato antigo (array) ou novo (objeto)
-      if (Arri  a     if(concursoInput) concursoInput.value = concurso;
+      if (Array.isArray(data)) {
+        apostas = data;
+      } else {
+        apostas = data.games || [];
+        concurso = data.concurso || "";
+        dataSorteio = data.data || "";
+      }
+      if(concursoInput) concursoInput.value = concurso;
       if(dataSorteioInput) dataSorteioInput.value = dataSorteio;
     } else if (res.status === 401) {
       logout();
