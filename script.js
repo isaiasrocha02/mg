@@ -1,5 +1,5 @@
 // --- CONFIGURAÇÃO DO SERVIDOR ---
-const API_URL = "http://localhost:3000"; // ⚠️ QUANDO HOSPEDAR O BACKEND, TROQUE ISSO PELO LINK DELE (Ex: https://meu-app.onrender.com)
+const API_URL = "https://mg-58kv.onrender.com"; // ⚠️ Cole o link do Render aqui
 
 if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1" && API_URL.includes("localhost")) {
   alert("⚠️ ERRO: O site está no GitHub Pages, mas configurado para 'localhost'.\n\nVocê precisa hospedar o backend (no Render) e atualizar a API_URL neste arquivo.");
