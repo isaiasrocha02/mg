@@ -332,3 +332,59 @@ table.admin-table th, table.admin-table td {
   text-align: left;
 }
 table.admin-table th { background: #444; }
+
+/* ===================== */
+/* AJUSTES MOBILE EXTRAS */
+/* ===================== */
+
+.user-controls {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .user-controls {
+    position: relative;
+    top: 0;
+    left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    background: #2f2f2f;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #444;
+  }
+  
+  .user-controls span {
+    text-align: center;
+    margin-bottom: 10px;
+    display: block;
+    margin-right: 0 !important;
+  }
+
+  .user-controls button {
+    width: 100%;
+    margin: 5px 0 !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+
+  .login-container {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .sorteio-controls, .manual-actions {
+    flex-direction: column;
+  }
+  
+  .sorteio-controls button, .manual-actions button {
+    width: 100%;
+  }
+}
