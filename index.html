@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>" type="image/x-icon">
+  <title>Conferência de Apostas – Mega-Sena 🍀</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body, button, input, select, textarea {
+    font-family: Arial, sans-serif;
+  }
+</style>
+</head>
+<body>
+<button id="btnTema" onclick="alternarTema()" class="tema-btn">🌙</button>
+
+<div style="position:absolute; top:15px; left:15px; z-index:100;">
+  <span id="userGreeting" style="font-weight:bold; margin-right:10px;"></span>
+  <button onclick="abrirModalSenha()" style="padding:5px 10px; font-size:12px; margin-right:5px;">Alterar Senha</button>
+  <button onclick="logout()" class="danger" style="padding:5px 10px; font-size:12px;">Sair</button>
+</div>
+
+<header class="segundo">🍀 Conferência de Apostas – Mega-Sena</header>
+
+  <section class="painel">
+    <h2>Números Sorteados (clique para selecionar)</h2>
+    <div id="sorteioGrid" class="numeros"></div>
+    <div class="sorteio-controls">
+      <button id="limparSorteioBtn">Limpar Sorteio</button>
+      <button id="entrarManualSorteioBtn">Entrar Sorteio Manual</button>
+    </div>
+    <div id="manualSorteio" class="manual-area" style="display:none;">
+      <small>Digite até 6 dezenas (auto-pulo, 01–60)</small>
+      <div id="sorteioInputs"></div>
+      <button id="salvarSorteioManual">Salvar Sorteio</button>
+    </div>
+  </section>
+
+  <section class="painel">
+    <h2>Carregar Apostas (PDF)</h2>
+    <input type="file" id="pdfInput" accept="application/pdf" multiple />
+    <small>Pode carregar vários PDFs de uma vez — o sistema tentará extrair os jogos (6–8 dezenas).</small>
+    <div id="pdfLog" class="log"></div>
+  </section>
+
+  <section class="painel">
+    <h2>Incluir Aposta Manualmente</h2>
+    <div class="manual-area">
+      <small>Insira entre 6 e 8 dezenas. Não é permitido repetir dentro do mesmo jogo. Auto-pulo habilitado.</small>
+      <div id="manualInputs"></div>
+      <div class="manual-actions">
+        <button id="addField">+ Campo (até 8)</button>
+        <button id="removeField">- Campo (mín 6)</button>
+        <button id="criarApostaManual">Adicionar Aposta</button>
+      </div>
+      <div id="manualErro" class="erro-msg"></div>
+    </div>
+  </section>
+
+  <section class="painel">
+    <h2>Apostas Carregadas</h2>
+    <div id="listaApostas"></div>
+    <div id="nenhumaAposta" style="text-align:center;color:#ccc;"></div>
+  </section>
+  <input type="file" id="importJsonInput" accept=".json" style="display:none">
+
+  <!-- Modal Alterar Senha -->
+  <div id="modalSenha" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#333; padding:20px; border-radius:8px; box-shadow:0 0 15px rgba(0,0,0,0.7); z-index:2000; color:#fff; width:300px;">
+    <h3 style="margin-top:0;">Alterar Senha</h3>
+    <input type="password" id="senhaAtual" placeholder="Senha Atual" style="width:100%; padding:8px; margin-bottom:10px; box-sizing:border-box;">
+    <input type="password" id="novaSenha" placeholder="Nova Senha" style="width:100%; padding:8px; margin-bottom:10px; box-sizing:border-box;">
+    <button onclick="salvarNovaSenha()" style="width:100%; margin-bottom:5px;">Salvar</button>
+    <button onclick="document.getElementById('modalSenha').style.display='none'" class="danger" style="width:100%;">Cancelar</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

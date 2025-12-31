@@ -1,0 +1,334 @@
+body {
+  font-family: 'Georgia', serif;
+  background: #222;
+  color: #fff;
+  padding: 18px;
+
+}
+
+
+h1, h2 { text-align:center; margin:6px 0 14px; }
+.painel {
+  background:#2f2f2f;
+  padding:16px;
+  margin:14px auto;
+  max-width:900px;
+  border-radius:10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.numeros {
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.numero {
+  padding:10px;
+  text-align:center;
+  background:#555;
+  border-radius:6px;
+  font-weight:bold;
+  cursor:pointer;
+  user-select:none;
+}
+.numero.selecionado { background:#4caf50; color:#fff; }
+.jogo { background:#3a3a3a; padding:12px; border-radius:8px; margin-bottom:10px; display:flex; flex-direction:column; gap:6px; }
+.jogo-header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.jogo-numeros { display:flex; flex-wrap:wrap; gap:6px; }
+.num { padding:8px; border-radius:6px; min-width:36px; text-align:center; background:#666; font-weight:bold; color:#fff; }
+.num.acerto { background:#2ecc71; color:#022; }
+.num.erro { background:#e74c3c; color:#fff; }
+.resultado { font-size:1.05em; margin-top:6px; }
+button { background:#1976d2; color:white; padding:8px 10px; border:none; border-radius:6px; cursor:pointer; }
+button.secondary { background:#666; }
+button.danger { background:#c0392b; }
+.manual-area { margin-top:10px; }
+#manualInputs, #sorteioInputs { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+.manual-actions { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+.small-input { width:56px; padding:8px; text-align:center; border-radius:6px; border:none; background:#eee; color:#000; font-weight:bold; }
+.erro-msg { color:#ff7675; margin-top:8px; }
+.log { margin-top:8px; color:#ccc; font-size:0.95em; max-height:120px; overflow:auto; }
+.sorteio-controls { margin-top:8px; display:flex; gap:8px; }
+.clear-sm { background:#777; }
+
+
+/* Tema claro */
+.tema-claro {
+    background: #f2f2f2;
+    color: #111;
+}
+
+.tema-claro .painel {
+    background: #fff;
+}
+
+.tema-claro .numero {
+    background: #ddd;
+    color: #000;
+}
+
+.tema-claro .jogo {
+    background: #fff;
+}
+
+.tema-claro .num {
+    color: #000;
+}
+
+.tema-claro .acerto {
+    background: #7ee87e !important;
+}
+
+.tema-claro .erro {
+    background: #ff8a80 !important;
+}
+/* CORREÇÃO — manter o verde no tema claro */
+.tema-claro .numero.selecionado {
+    background: #4caf50 !important;
+    color: #fff !important;
+}
+
+.tema-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 26px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+.tema-btn:hover {
+  transform: scale(1.2);
+}
+
+
+/* ===================== */
+/* HEADER */
+/* ===================== */
+
+header {
+    background: #2a5d9f;
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+header.segundo {
+    background: #2f2f2f;
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+
+/* ===================== */
+/* NAV - Área de Navegação */
+/* ===================== */
+
+nav {
+    display: flex;
+    justify-content: center;
+    background: #e3ecfa;
+    padding: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Botões do NAV */
+nav button,
+nav a button {
+    background: #000000;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+nav button:hover,
+nav a button:hover {
+    background: #2a5d9f;
+}
+
+nav .active {
+    background: #000000;
+}
+
+
+/* ===================== */
+/* DROPDOWN - Menus dentro do NAV */
+/* ===================== */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown button {
+    background: #000000;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.dropdown button:hover {
+    background: #1e4373;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: #ffffff;
+    min-width: 160px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    z-index: 10;
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 16px;
+    color: #2a5d9f;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background: #e3ecfa;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/* ============================ */
+/*   RESPONSIVIDADE PARA CELULAR */
+/* ============================ */
+
+/* Telas menores que 768px (tablets e celulares) */
+@media (max-width: 768px) {
+  .numeros {
+    grid-template-columns: repeat(6, 1fr); /* 10 → 6 colunas */
+    gap: 6px;
+  }
+
+  .numero {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  header,
+  header.segundo {
+    font-size: 18px;
+    padding: 14px;
+  }
+
+  nav {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  nav button {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .painel {
+    padding: 12px;
+    margin: 10px auto;
+  }
+}
+
+/* Telas muito pequenas (menos de 480px) */
+@media (max-width: 480px) {
+  .numeros {
+    grid-template-columns: repeat(4, 1fr); /* 6 → 4 colunas */
+    gap: 5px;
+  }
+
+  .numero {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  .jogo-numeros .num {
+    min-width: 30px;
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  nav button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .tema-btn {
+    font-size: 22px;
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* ===================== */
+/* LOGIN & ADMIN STYLES  */
+/* ===================== */
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  background: #2f2f2f;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  text-align: center;
+}
+.tema-claro .login-container { background: #fff; }
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.link-action {
+  color: #4caf50;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 10px;
+  display: block;
+}
+
+table.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+table.admin-table th, table.admin-table td {
+  border: 1px solid #555;
+  padding: 10px;
+  text-align: left;
+}
+table.admin-table th { background: #444; }

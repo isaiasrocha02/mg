@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Mega-Sena</title>
+  <link rel="stylesheet" href="style.css">
+  <style>body { font-family: Arial, sans-serif; }</style>
+</head>
+<body>
+
+<div class="login-container" id="loginBox">
+  <h2>🔐 Entrar</h2>
+  <input type="email" id="loginEmail" placeholder="Seu E-mail">
+  <input type="password" id="loginPass" placeholder="Sua Senha">
+  <button onclick="fazerLogin()" style="width:100%; margin-top:10px;">Entrar</button>
+  <div style="margin-top:10px; font-size:0.9em; color:#ccc; cursor:pointer;" onclick="esqueciSenha()">Esqueci minha senha</div>
+  <span class="link-action" onclick="toggleForms()">Não tem conta? Cadastre-se</span>
+</div>
+
+<div class="login-container" id="registerBox" style="display:none;">
+  <h2>📝 Cadastro</h2>
+  <input type="text" id="regNome" placeholder="Seu Nome Completo">
+  <input type="email" id="regEmail" placeholder="Seu E-mail">
+  <input type="password" id="regPass" placeholder="Crie uma Senha">
+  <button onclick="fazerCadastro()" class="secondary" style="width:100%; margin-top:10px; background:#4caf50;">Cadastrar</button>
+  <span class="link-action" onclick="toggleForms()">Já tenho conta. Voltar ao Login</span>
+</div>
+
+<script>
+  const API_URL = "http://localhost:3000"; // ⚠️ ALTERE AQUI TAMBÉM QUANDO HOSPEDAR
+
+  // Limpa sessão anterior ao entrar na tela de login
+  localStorage.removeItem("currentUser");
+  localStorage.removeItem("token");
+
+  function toggleForms() {
+    const login = document.getElementById("loginBox");
+    const reg = document.getElementById("registerBox");
+    if (login.style.display === "none") {
+      login.style.display = "block";
+      reg.style.display = "none";
+    } else {
+      login.style.display = "none";
+      reg.style.display = "block";
+    }
+  }
+
+  async function fazerCadastro() {
+    const nome = document.getElementById("regNome").value;
+    const email = document.getElementById("regEmail").value.trim();
+    const pass = document.getElementById("regPass").value;
+
+    if (!nome || !email || !pass) return alert("Preencha todos os campos.");
+
+    try {
+      const res = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email, password: pass })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        alert("Cadastro realizado com sucesso! Faça login.");
+        toggleForms();
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert("Erro ao conectar com o servidor.");
+    }
+  }
+
+  async function fazerLogin() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pass = document.getElementById("loginPass").value;
+
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        
+        if (data.user.is_admin) window.location.href = "admin.html";
+        else window.location.href = "index.html";
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert("Erro ao conectar com o servidor.");
+    }
+  }
+
+  async function esqueciSenha() {
+    const email = prompt("Digite seu e-mail para recuperar a senha:");
+    if (!email) return;
+    
+    try {
+      const res = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      alert(data.message);
+    } catch (err) {
+      alert("Erro ao conectar com o servidor.");
+    }
+  }
+</script>
+
+</body>
+</html>

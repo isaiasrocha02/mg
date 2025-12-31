@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin - Mega-Sena</title>
+  <link rel="stylesheet" href="style.css">
+  <style>body { font-family: Arial, sans-serif; }</style>
+</head>
+<body>
+  <header class="segundo">Painel do Administrador 👮‍♂️</header>
+  
+  <nav>
+    <button onclick="window.location.href='index.html'">Ir para Sorteio / Jogos</button>
+    <button onclick="logout()">Sair</button>
+  </nav>
+
+  <section class="painel">
+    <h2>Usuários e Apostas</h2>
+    <div style="margin-bottom: 15px;">
+      <label><input type="checkbox" id="chkGanhadores" onchange="carregarDados()"> Mostrar apenas ganhadores (Quadra, Quina, Sena)</label>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Qtd. Jogos</th>
+            <th>Detalhes dos Jogos</th>
+          </tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+<script>
+  const API_URL = "http://localhost:3000"; // ⚠️ ALTERE AQUI TAMBÉM QUANDO HOSPEDAR
+
+  // Verifica se é admin
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser || !currentUser.isAdmin) {
+    alert("Acesso negado.");
+    window.location.href = "login.html";
+  }
+
+  function logout() {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  }
+
+  async function carregarDados() {
+    const tbody = document.getElementById("usersTable");
+    const numerosSorteados = JSON.parse(localStorage.getItem("sorteio")) || [];
+    const mostrarGanhadores = document.getElementById("chkGanhadores").checked;
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`${API_URL}/api/admin/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) return logout();
+        return alert("Erro ao carregar dados.");
+      }
+
+      const users = await res.json();
+      if (users.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4'>Nenhum usuário cadastrado.</td></tr>";
+        return;
+      }
+
+      tbody.innerHTML = ""; // Limpa antes de preencher
+
+      users.forEach(u => {
+        const apostasUser = u.apostas || [];
+        
+        // Se filtro ativo, verifica se tem prêmio (4, 5 ou 6 acertos)
+        if (mostrarGanhadores) {
+          const temPremio = apostasUser.some(jogo => {
+            const acertos = jogo.filter(n => numerosSorteados.includes(n)).length;
+            return acertos >= 4;
+          });
+          if (!temPremio) return;
+        }
+
+        const tr = document.createElement("tr");
+        
+        // Formata os jogos para exibição
+        let jogosStr = "";
+        if (apostasUser.length > 0) {
+          jogosStr = apostasUser.map((jogo, i) => {
+            let acertos = 0;
+            const numsHtml = jogo.map(n => {
+              const s = String(n).padStart(2, '0');
+              if (numerosSorteados.includes(n)) {
+                acertos++;
+                return `<b style="color:#4caf50;">${s}</b>`;
+              }
+              return s;
+            }).join('-');
+
+            let premio = "";
+            if (acertos === 6) premio = " <span style='color:#ffd700; font-weight:bold;'>🏆 SENA</span>";
+            else if (acertos === 5) premio = " <span style='color:#ffa500; font-weight:bold;'>🎉 QUINA</span>";
+            else if (acertos === 4) premio = " <span style='color:#3498db; font-weight:bold;'>🥳 QUADRA</span>";
+            else if (acertos > 0) premio = ` <span style='color:#888; font-size:0.85em;'>(${acertos} acertos)</span>`;
+
+            return `<div><strong>J${i+1}:</strong> ${numsHtml}${premio}</div>`;
+          }).join("");
+        } else {
+          jogosStr = "<span style='color:#999'>Sem apostas</span>";
+        }
+
+        tr.innerHTML = `
+          <td>${u.nome}</td>
+          <td>${u.email}</td>
+          <td>${apostasUser.length}</td>
+          <td>${jogosStr}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Erro de conexão.");
+    }
+  }
+
+  carregarDados();
+</script>
+</body>
+</html>
