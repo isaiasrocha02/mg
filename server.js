@@ -37,6 +37,11 @@ db.serialize(() => {
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS config (
+        key TEXT PRIMARY KEY,
+        value TEXT
+    )`);
+
     // Criar Admin padrão se não existir
     const adminPass = "admin"; // Senha padrão
     const adminEmail = "admin@mega.sena";
@@ -132,6 +137,22 @@ app.get('/api/apostas', authenticateToken, (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         const jogos = row ? JSON.parse(row.jogos) : [];
         res.json(jogos);
+    });
+});
+
+// --- ROTAS DE SORTEIO (GABARITO) ---
+app.get('/api/sorteio', (req, res) => {
+    db.get("SELECT value FROM config WHERE key = 'sorteio'", (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(row ? JSON.parse(row.value) : []);
+    });
+});
+
+app.post('/api/sorteio', authenticateToken, (req, res) => {
+    const { numeros } = req.body;
+    db.run("REPLACE INTO config (key, value) VALUES ('sorteio', ?)", [JSON.stringify(numeros)], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Sorteio salvo." });
     });
 });
 

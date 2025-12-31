@@ -57,11 +57,17 @@
 
   async function carregarDados() {
     const tbody = document.getElementById("usersTable");
-    const numerosSorteados = JSON.parse(localStorage.getItem("sorteio")) || [];
     const mostrarGanhadores = document.getElementById("chkGanhadores").checked;
     const token = localStorage.getItem("token");
+    let numerosSorteados = [];
 
     try {
+      // Busca o sorteio atualizado do servidor
+      const resSorteio = await fetch(`${API_URL}/api/sorteio`);
+      if (resSorteio.ok) {
+        numerosSorteados = await resSorteio.json();
+      }
+
       const res = await fetch(`${API_URL}/api/admin/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });

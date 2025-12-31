@@ -74,7 +74,7 @@ const pad = n => String(n).padStart(2, "0");
 const inRange = n => Number.isInteger(n) && n >= 1 && n <= 60;
 
 // armazenamento
-let numerosSorteados = JSON.parse(localStorage.getItem("sorteio")) || [];
+let numerosSorteados = []; // Será carregado da API
 
 // CARREGA APOSTAS ESPECÍFICAS DO USUÁRIO LOGADO
 let apostas = []; // Será carregado da API
@@ -176,8 +176,18 @@ salvarSorteioManualBtn.addEventListener("click", () => {
 });
 
 // salvar sorteio
-function salvarSorteio() {
+async function salvarSorteio() {
   localStorage.setItem("sorteio", JSON.stringify(numerosSorteados));
+  try {
+    await fetch(`${API_URL}/api/sorteio`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ numeros: numerosSorteados })
+    });
+  } catch (err) { console.error("Erro ao salvar sorteio", err); }
 }
 
 // carregar apostas e exibir
@@ -193,7 +203,7 @@ async function salvarApostas() {
     });
   } catch (err) {
     console.error("Erro ao salvar no servidor", err);
-    // Opcional: alert("Erro de conexão ao salvar.");
+    alert("⚠️ Erro ao salvar aposta no servidor! Verifique sua conexão.");
   }
 }
 function atualizarApostas() {
@@ -313,8 +323,15 @@ function atualizarApostas() {
 
 // inicialização
 async function init() {
-  montarGrid();
   
+  // Carregar Sorteio do Servidor
+  try {
+    const resSorteio = await fetch(`${API_URL}/api/sorteio`);
+    if (resSorteio.ok) numerosSorteados = await resSorteio.json();
+  } catch (e) { console.error("Erro ao carregar sorteio", e); }
+  
+  montarGrid(); // Monta o grid já com os números certos
+
   try {
     const res = await fetch(`${API_URL}/api/apostas`, {
       headers: { 'Authorization': `Bearer ${token}` }
