@@ -154,11 +154,11 @@
         }
 
         tr.innerHTML = `
-          <td>${u.nome}</td>
-          <td>${u.email}</td>
-          <td style="font-size:0.9em; color:#ccc;">${infoExtra}</td>
-          <td>${apostasUser.length}</td>
-          <td>${jogosStr}</td>
+          <td data-label="Nome">${u.nome}</td>
+          <td data-label="E-mail">${u.email}</td>
+          <td data-label="Info" style="font-size:0.9em; color:#ccc;">${infoExtra}</td>
+          <td data-label="Qtd. Jogos">${apostasUser.length}</td>
+          <td data-label="Detalhes">${jogosStr}</td>
         `;
         tbody.appendChild(tr);
       });

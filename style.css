@@ -387,4 +387,56 @@ table.admin-table th { background: #444; }
   .sorteio-controls button, .manual-actions button {
     width: 100%;
   }
+
+  /* ===================== */
+  /* ADMIN RESPONSIVO      */
+  /* ===================== */
+  
+  /* Ajusta menu de navegação do admin */
+  nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  nav button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  /* Transforma a tabela em Cards */
+  table.admin-table thead {
+    display: none; /* Esconde cabeçalho */
+  }
+  
+  table.admin-table, table.admin-table tbody, table.admin-table tr, table.admin-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  table.admin-table tr {
+    margin-bottom: 20px;
+    background: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .tema-claro table.admin-table tr { background: #fff; border: 1px solid #ccc; }
+
+  table.admin-table td {
+    text-align: left;
+    padding: 8px 0;
+    border-bottom: 1px solid #555;
+    display: flex;
+    flex-direction: column;
+  }
+  table.admin-table td:last-child { border-bottom: none; }
+
+  table.admin-table td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #4caf50;
+    margin-bottom: 4px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+  }
 }
