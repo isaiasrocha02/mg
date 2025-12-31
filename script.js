@@ -1,3 +1,4 @@
+console.log("Sistema carregado - Versão Atualizada");
 // --- CONFIGURAÇÃO DO SERVIDOR ---
 const API_URL = "https://mg-58kv.onrender.com"; // ⚠️ Cole o link do Render aqui
 
