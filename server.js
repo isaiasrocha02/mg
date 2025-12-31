@@ -44,14 +44,14 @@ db.serialize(() => {
 
     // Criar Admin padrão se não existir
     const adminPass = "admin"; // Senha padrão
-    const adminEmail = "admin@mega.sena";
+    const adminEmail = "admin@msdomilhao.app";
     
     db.get("SELECT * FROM users WHERE email = ?", [adminEmail], (err, row) => {
         if (!row) {
             bcrypt.hash(adminPass, 10, (err, hash) => {
                 db.run("INSERT INTO users (nome, email, password, is_admin) VALUES (?, ?, ?, ?)", 
                 ["Administrador", adminEmail, hash, 1]);
-                console.log("Admin padrão criado: admin@mega.sena / admin");
+                console.log("Admin padrão criado: admin@msdomilhao.app / admin");
             });
         }
     });

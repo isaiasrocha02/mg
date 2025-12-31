@@ -1,5 +1,5 @@
 {
-  "name": "mega-sena-app",
+  "name": "ms-do-milhao-app",
   "version": "1.0.0",
   "description": "Sistema de apostas com backend",
   "main": "server.js",
