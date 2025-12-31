@@ -78,6 +78,16 @@ let numerosSorteados = []; // Será carregado da API
 
 // CARREGA APOSTAS ESPECÍFICAS DO USUÁRIO LOGADO
 let apostas = []; // Será carregado da API
+let concurso = "";
+let dataSorteio = "";
+
+// Inputs de Concurso e Data
+const concursoInput = $("concursoInput");
+const dataSorteioInput = $("dataSorteioInput");
+
+// Listeners para salvar automaticamente ao mudar concurso/data
+if(concursoInput) concursoInput.addEventListener("input", (e) => { concurso = e.target.value; salvarApostas(); });
+if(dataSorteioInput) dataSorteioInput.addEventListener("input", (e) => { dataSorteio = e.target.value; salvarApostas(); });
 
 // elementos
 const sorteioGrid = $("sorteioGrid");
@@ -199,7 +209,7 @@ async function salvarApostas() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ apostas })
+      body: JSON.stringify({ apostas, concurso, data: dataSorteio })
     });
   } catch (err) {
     console.error("Erro ao salvar no servidor", err);
@@ -337,7 +347,17 @@ async function init() {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
-      apostas = await res.json();
+      const data = await res.json();
+      // Verifica se é o formato antigo (array) ou novo (objeto)
+      if (Array.isArray(data)) {
+        apostas = data;
+      } else {
+        apostas = data.games || [];
+        concurso = data.concurso || "";
+        dataSorteio = data.data || "";
+      }
+      if(concursoInput) concursoInput.value = concurso;
+      if(dataSorteioInput) dataSorteioInput.value = dataSorteio;
     } else if (res.status === 401) {
       logout();
       return;

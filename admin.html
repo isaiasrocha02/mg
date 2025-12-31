@@ -12,6 +12,7 @@
   
   <nav>
     <button onclick="window.location.href='app.html'">Ir para Sorteio / Jogos</button>
+    <button onclick="resetarBolao()" style="background:#c0392b;">Reiniciar Bolão</button>
     <button onclick="logout()">Sair</button>
   </nav>
 
@@ -26,6 +27,7 @@
           <tr>
             <th>Nome</th>
             <th>E-mail</th>
+            <th>Info (Conc/Data)</th>
             <th>Qtd. Jogos</th>
             <th>Detalhes dos Jogos</th>
           </tr>
@@ -53,6 +55,22 @@
     localStorage.removeItem("currentUser");
     localStorage.removeItem("token");
     window.location.href = "index.html";
+  }
+
+  async function resetarBolao() {
+    if(!confirm("ATENÇÃO: Isso apagará TODAS as apostas e o sorteio atual para iniciar um novo bolão.\n\nDeseja continuar?")) return;
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API_URL}/api/admin/reset`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if(res.ok) { alert(data.message); carregarDados(); }
+      else { alert(data.error); }
+    } catch(e) {
+      alert("Erro ao conectar.");
+    }
   }
 
   async function carregarDados() {
@@ -86,7 +104,17 @@
       tbody.innerHTML = ""; // Limpa antes de preencher
 
       users.forEach(u => {
-        const apostasUser = u.apostas || [];
+        const rawData = u.apostas || [];
+        let apostasUser = [];
+        let infoExtra = "-";
+
+        // Verifica se é formato novo ou antigo
+        if (Array.isArray(rawData)) {
+          apostasUser = rawData;
+        } else {
+          apostasUser = rawData.games || [];
+          if(rawData.concurso || rawData.data) infoExtra = `Conc: ${rawData.concurso || '?'} <br> Data: ${rawData.data || '?'}`;
+        }
         
         // Se filtro ativo, verifica se tem prêmio (4, 5 ou 6 acertos)
         if (mostrarGanhadores) {
@@ -128,6 +156,7 @@
         tr.innerHTML = `
           <td>${u.nome}</td>
           <td>${u.email}</td>
+          <td style="font-size:0.9em; color:#ccc;">${infoExtra}</td>
           <td>${apostasUser.length}</td>
           <td>${jogosStr}</td>
         `;

@@ -112,8 +112,10 @@ const authenticateToken = (req, res, next) => {
 
 // Salvar Apostas (Sobrescreve as atuais do usuário)
 app.post('/api/apostas', authenticateToken, (req, res) => {
-    const { apostas } = req.body; // Array de arrays
-    const apostasString = JSON.stringify(apostas);
+    const { apostas, concurso, data } = req.body; // Recebe dados extras
+    // Salva tudo em um objeto JSON
+    const dadosParaSalvar = { games: apostas, concurso, data };
+    const apostasString = JSON.stringify(dadosParaSalvar);
     
     // Verifica se já existe registro para atualizar ou criar novo
     db.get("SELECT id FROM apostas WHERE user_id = ?", [req.user.id], (err, row) => {
@@ -170,6 +172,17 @@ app.get('/api/admin/users', authenticateToken, (req, res) => {
             apostas: row.jogos ? JSON.parse(row.jogos) : []
         }));
         res.json(data);
+    });
+});
+
+// Rota de Admin: Resetar Bolão (Limpar Banco)
+app.delete('/api/admin/reset', authenticateToken, (req, res) => {
+    if (!req.user.is_admin) return res.status(403).json({ error: "Acesso negado." });
+    
+    db.serialize(() => {
+        db.run("DELETE FROM apostas");
+        db.run("DELETE FROM config WHERE key = 'sorteio'");
+        res.json({ message: "Bolão reiniciado com sucesso! Todas as apostas foram apagadas." });
     });
 });
 

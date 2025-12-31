@@ -38,6 +38,14 @@
   </section>
 
   <section class="painel">
+    <h2>Dados do Concurso</h2>
+    <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
+      <label><strong>Concurso (4 núm):</strong> <input type="text" id="concursoInput" maxlength="4" placeholder="Ex: 2650" style="width:100px; padding:8px; text-align:center;"></label>
+      <label><strong>Data do Sorteio:</strong> <input type="date" id="dataSorteioInput" style="padding:8px;"></label>
+    </div>
+  </section>
+
+  <section class="painel">
     <h2>Carregar Apostas (PDF)</h2>
     <input type="file" id="pdfInput" accept="application/pdf" multiple />
     <small>Pode carregar vários PDFs de uma vez — o sistema tentará extrair os jogos (6–8 dezenas).</small>
